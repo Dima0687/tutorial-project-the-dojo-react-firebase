@@ -5,7 +5,7 @@ import './Project.css'
 const Project = () => {
   return (
     <div>
-      Project
+      Project details
     </div>
   );
 }
