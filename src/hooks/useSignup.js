@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { projectAuth } from "../firebase/config";
+import { projectAuth, projectStorage, projectFirestore } from "../firebase/config";
 import { useAuthContext } from './useAuthContext';
 
 export const useSignup = () => {
@@ -8,7 +8,7 @@ export const useSignup = () => {
   const [isPending, setIsPending] = useState(false);
   const { dispatch } = useAuthContext();
 
-  const signup = async (email, password, displayName) => {
+  const signup = async (email, password, displayName, thumbnail) => {
     setError(null); // reset the Error
     setIsPending(true); // set is Pending on true
 
@@ -20,9 +20,24 @@ export const useSignup = () => {
         throw new Error('Could not complete signup!');
       }
 
-      // add display name to user
+      // uplaod user thumbnail
+      const uploadPath = `thumbnails/${resp.user.uid}/${thumbnail.name}`;
+      const img = await projectStorage.ref(uploadPath).put(thumbnail);
+      const imgURL = await img.ref.getDownloadURL();
 
-      await resp.user.updateProfile({ displayName });
+      if(!imgURL){
+        throw new Error('Could not create a new image folder');
+      }
+
+      // add display name to user
+      await resp.user.updateProfile({ displayName, photoURL: imgURL });
+
+      // create a user document
+      await projectFirestore.collection('users').doc(resp.user.uid).set({
+        online: true,
+        displayName,
+        photoURL: imgURL
+      });
 
       // dispatch login action
       dispatch({ type: 'LOGIN', payload: resp.user })

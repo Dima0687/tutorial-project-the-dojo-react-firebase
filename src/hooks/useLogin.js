@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { projectAuth } from '../firebase/config';
+import { projectAuth, projectFirestore } from '../firebase/config';
 import { useAuthContext } from './useAuthContext';
 
 export const useLogin = () => {
@@ -10,10 +10,14 @@ export const useLogin = () => {
 
   const login = async (email, password) => {
     try {
-      const resp = await projectAuth.signInWithEmailAndPassword(email, password)
-  
+      const resp = await projectAuth.signInWithEmailAndPassword(email, password);
+      const { uid } = resp.user;
+
       // dispatch login action
-      dispatch({ type: 'LOGIN', payload: resp.user })
+      dispatch({ type: 'LOGIN', payload: resp.user });
+
+      // update online status
+      await projectFirestore.collection('users').doc(uid).update({ online: true });
   
       // update state
       if(!isCancelled){

@@ -7,13 +7,21 @@ import AddIcon from '../assets/add_icon.svg';
 // styles
 import './Sidebar.css';
 
+// components
+import Avatar from './Avatar';
+
+// hooks
+import { useAuthContext } from '../hooks/useAuthContext';
+
 const Sidebar = () => {
+  const { user } = useAuthContext();
+
   return (
     <div className='sidebar'>
       <div className="sidebar-content">
         <div className="user">
-          {/* avatar and username here later */}
-          <p>hey user</p>
+          <Avatar src={user.photoURL}/>
+          <p>Hey {user.displayName}</p>
         </div>
         <nav className="links">
           <ul>
