@@ -1,6 +1,10 @@
 import { v4 as uuid } from 'uuid';
 import { useState } from 'react';
 
+
+//components
+import Avatar from '../../components/Avatar';
+
 //firebase
 import { timestamp } from '../../firebase/config';
 
@@ -33,6 +37,24 @@ const ProjectComments = ({ project }) => {
   return (
     <div className='project-comments'>
       <h4>Project Comments</h4>
+
+      <ul>
+        {project.comments.length > 0 && project.comments.map( comment => (
+          <li key={comment.id}>
+            <div className="comment-author">
+              <Avatar src={comment.photoURL} title={comment.displayName}/>
+              <p>{comment.displayName}</p>
+            </div>
+            <div className="comment-date">
+              <p>date here</p>
+            </div>
+            <div className="comment-content">
+              <p>{comment.content}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+
       <form className='add-comment' onSubmit={handleSubmit}>
         <label>
           <span>Add new comment:</span>
