@@ -1,5 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import { useState } from 'react';
+import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 
 
 //components
@@ -46,7 +47,7 @@ const ProjectComments = ({ project }) => {
               <p>{comment.displayName}</p>
             </div>
             <div className="comment-date">
-              <p>date here</p>
+              <p>{formatDistanceToNow(comment.createdAt.toDate(), { addSuffix: true })}</p>
             </div>
             <div className="comment-content">
               <p>{comment.content}</p>
